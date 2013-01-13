@@ -357,6 +357,21 @@ public class XMLProcessingUtils {
 		return document;
 	}
 
+	
+	public Document updateAttributes(Element element,
+			HashMap<String,String> attributesMap) {
+		if(attributesMap!=null&&attributesMap.size()>0){
+			Set<Entry<String,String>> entrySet=attributesMap.entrySet();
+			Iterator<Entry<String,String>> iter=entrySet.iterator();
+			while(iter.hasNext()){
+				Entry<String,String> entry=iter.next();
+				element.setAttribute(entry.getKey(), entry.getValue());
+			}
+		}
+		return document;
+	}
+
+	
 	public Document updateAttributes(String xPathExpr,
 			HashMap<String,String> attributesMap) {
 		Element element = getUniqueElementByXPath(xPathExpr, null, null);

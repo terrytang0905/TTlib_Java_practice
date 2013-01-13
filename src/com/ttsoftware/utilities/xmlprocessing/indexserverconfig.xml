@@ -47,7 +47,7 @@
 				</for-element-with-name>
 				<for-element-with-name path="/dmftdoc/dmftcustom//dmftcontentref">
 					<xml-content file-limit="524288" index-as-sub-path="false" on-embed-error="embed_as_cdata" store="embed" tokenize="true"/>
-					<save-tokens-for-summary-processing extract-text-size-less-than="-1" token-size="65536"/>
+					<save-tokens-for-summary-processing extract-text-size-less-than="-1" token-size="-1"/>
 				</for-element-with-name>
 			</do-text-extraction>
 			<elements-for-static-summary max-size="65536">
