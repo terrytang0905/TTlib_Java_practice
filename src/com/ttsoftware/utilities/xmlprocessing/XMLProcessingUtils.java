@@ -50,6 +50,19 @@ public class XMLProcessingUtils {
 	private Document document;
 	private XPath xpath;
 
+	public XMLProcessingUtils() {
+		try {
+			DocumentBuilderFactory factory = DocumentBuilderFactory
+					.newInstance();
+			DocumentBuilder m_builder = factory.newDocumentBuilder();
+			document = m_builder.newDocument();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	
 	public XMLProcessingUtils(File xmlFile) {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory
