@@ -1,13 +1,44 @@
 package com.ttsoftware.utilities.algorithm;
 
 public enum SortType {
+	
+	/**
+	 * Bubble Sorting, it's very similar with Insertion Sorting
+	 */
+	BUBBLE(new Sortable() {
+		public <T extends Comparable<T>> void sort(T[] array, boolean ascend) {
+			int length = array.length;
+			int lastExchangedIdx = 0;
+			for (int i = 0; i < length - 1; i++) {
+				// mark the flag to identity whether exchange happened to false
+				boolean isExchanged = false;
+				// last compare and exchange happened before reaching index i
+				int currOrderedIdx = lastExchangedIdx > i ? lastExchangedIdx
+						: i;
+				for (int j = length - 1; j > currOrderedIdx; j--) {
+					int compare = array[j - 1].compareTo(array[j]);
+					if (compare != 0 && compare > 0 == ascend) {
+						exchange(array, j - 1, j);
+						isExchanged = true;
+						lastExchangedIdx = j;
+					}
+				}
+				// if no exchange happen means array is already in order
+				if (isExchanged == false) {
+					break;
+				}
+			}
+		}
+	}),
+
+	
 	/**
 	 * Selection Sorting
 	 */
 	SELECTION(new Sortable() {
 		public <T extends Comparable<T>> void sort(T[] array, boolean ascend) {
 			int len = array.length;
-			for (int i = 0; i < len; i++) {
+			for (int i = 0; i < len-1; i++) {
 				int selected = i;
 				for (int j = i + 1; j < len; j++) {
 					int compare = array[j].compareTo(array[selected]);
@@ -44,35 +75,7 @@ public enum SortType {
 		}
 	}),
 
-	/**
-	 * Bubble Sorting, it's very similar with Insertion Sorting
-	 */
-	BUBBLE(new Sortable() {
-		public <T extends Comparable<T>> void sort(T[] array, boolean ascend) {
-			int length = array.length;
-			int lastExchangedIdx = 0;
-			for (int i = 0; i < length - 1; i++) {
-				// mark the flag to identity whether exchange happened to false
-				boolean isExchanged = false;
-				// last compare and exchange happened before reaching index i
-				int currOrderedIdx = lastExchangedIdx > i ? lastExchangedIdx
-						: i;
-				for (int j = length - 1; j > currOrderedIdx; j--) {
-					int compare = array[j - 1].compareTo(array[j]);
-					if (compare != 0 && compare > 0 == ascend) {
-						exchange(array, j - 1, j);
-						isExchanged = true;
-						lastExchangedIdx = j;
-					}
-				}
-				// if no exchange happen means array is already in order
-				if (isExchanged == false) {
-					break;
-				}
-			}
-		}
-	}),
-
+	
 	/**
 	 * Shell Sorting
 	 */
