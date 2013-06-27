@@ -190,5 +190,9 @@ public class MathsAlgorithm {
 		}
 		System.out.println("应发的奖金是" + sum);
 	}
+	
+	
+	
+	
 
 }
