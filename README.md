@@ -1,4 +1,12 @@
 JavaUtility
 ===========
 
-Java utility list contain IO handler/String handler/Algorithm
+J2SE common utilities
+
+- Algorithm
+- String handler
+- IO handler
+- Performance
+- Message
+- Puzzle
+
