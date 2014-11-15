@@ -7,6 +7,8 @@ J2SE common utilities
 - String handler
 - IO handler
 - Performance
-- Message
+- Messager
+- Concurrency
 - Puzzle
+- XMLProcessing
 
