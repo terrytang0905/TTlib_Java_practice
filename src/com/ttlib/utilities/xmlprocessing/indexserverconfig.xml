@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><index-server-configuration config-check-interval="60000" enable-lemmatization="true" purge-statusdb-on-startup="false" revision="1.5">
+	<node admin-rmi-port="9331" appserver-instance-name="PrimaryDsearch" hostname="xPlore_120927" name="PrimaryDsearch" primaryNode="true" status="normal" url="http://xPlore_120927:9300/dsearch/" xdb-listener-port="9330">
+		<properties>
+			<property name="statusdb-cache-size" value="10000"/>
+		</properties>
+	</node>
+	<content-processing-services analyzer="rlp" context-characters="!,;?&quot;" special-characters="@#$%^_~`&amp;:.()-+=&lt;&gt;'/\[]{}">
+		<content-processing-service capacity="all" url="local" usage="all"/>
+	</content-processing-services>
+	<category-definitions>
+		<category name="recommendation">
+			<properties>
+				<property name="track-location" value="false"/>
+			</properties>
+		</category>
+		<category name="event">
+			<properties>
+				<property name="track-location" value="false"/>
+			</properties>
+			<indexes>
+				<path-value-index name="Edges from+type" options="CONCURRENT" path="//edge[from&lt;STRING&gt; + type&lt;STRING&gt;]"/>
+				<path-value-index name="Edges from+type+date" options="CONCURRENT" path="//edge[type&lt;STRING&gt; + from&lt;STRING&gt; + date&lt;STRING&gt;]"/>
+				<path-value-index name="Edges to+type" options="CONCURRENT" path="//edge[type&lt;STRING&gt; + to&lt;STRING&gt;]"/>
+				<path-value-index name="Edges to+from+type" options="CONCURRENT" path="//edge[from&lt;STRING&gt; + type&lt;STRING&gt; + to&lt;STRING&gt;]"/>
+				<path-value-index name="Edges type" options="CONCURRENT" path="//edge[type&lt;STRING&gt;]"/>
+				<path-value-index name="Edges type+from_space_id" options="CONCURRENT" path="//edge[type&lt;STRING&gt; + from_space_id&lt;STRING&gt;]"/>
+			</indexes>
+		</category>
+		<category name="precomputedRelation">
+			<properties>
+				<property name="track-location" value="false"/>
+			</properties>
+			<indexes>
+				<path-value-index name="nodes by type and edge ids" options="CONCURRENT" path="//node[@type&lt;STRING&gt; + edge/@nodeId&lt;STRING&gt;]"/>
+				<path-value-index name="nodes by type and id" options="CONCURRENT" path="//node[@type&lt;STRING&gt; + @id&lt;STRING&gt;]"/>
+			</indexes>
+		</category>
+		<category name="dftxml">
+			<properties>
+				<property name="track-location" value="true"/>
+				<property name="enable-freshness-score" value="true"/>
+			</properties>
+			<do-text-extraction>
+				<for-element-with-name path="/dmftdoc/dmftcontents/dmftcontent/dmftcontentref">
+					<xml-content file-limit="524288" index-as-sub-path="false" on-embed-error="embed_as_cdata" store="embed" tokenize="true"/>
+					<save-tokens-for-summary-processing extract-text-size-less-than="-1" token-size="65536"/>
+				</for-element-with-name>
+				<for-element-with-name path="/dmftdoc/dmftcustom//dmftcontentref">
+					<xml-content file-limit="524288" index-as-sub-path="false" on-embed-error="embed_as_cdata" store="embed" tokenize="true"/>
+					<save-tokens-for-summary-processing extract-text-size-less-than="-1" token-size="-1"/>
+				</for-element-with-name>
+			</do-text-extraction>
+			<elements-for-static-summary max-size="65536">
+				<element-name name="title"/>
+				<element-name name="subject"/>
+				<element-name name="object_name"/>
+			</elements-for-static-summary>
+			<linguistic-process>
+				<element-with-attribute name="dmfttype" value="dmstring"/>
+				<element-with-name name="dmftcustom">
+					<save-tokens-for-summary-processing extract-text-size-less-than="-1" token-size="65536"/>
+				</element-with-name>
+				<element-for-language-identification name="object_name"/>
+				<element-for-language-identification name="title"/>
+				<element-for-language-identification name="subject"/>
+				<element-for-language-identification name="keywords"/>
+			</linguistic-process>
+			<compress>
+				<for-element name="dmftcontentref"/>
+			</compress>
+			<indexes>
+				<path-value-index name="dmftdoc" options="GET_ALL_TEXT,SUPPORT_PHRASES,NO_LOGGING,INCLUDE_START_END_TOKEN_FLAGS" path="/dmftdoc&lt;FULL_TEXT:com.emc.documentum.core.fulltext.indexserver.core.index.xhive.IndexServerAnalyzer:GET_ALL_TEXT,SUPPORT_PHRASES,INCLUDE_START_END_TOKEN_FLAGS,INDEX_PATHS&gt;">
+					<sub-path boost-value="50.0" compress="false" enumerate-repeating-elements="false" full-text-search="true" include-descendants="true" leading-wildcard="false" path="dmftmetadata" returning-contents="false" sortable="false" type="string" value-comparison="false"/>
+					<sub-path boost-value="1.0" compress="false" enumerate-repeating-elements="false" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftmetadata//*" returning-contents="false" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="false" description="Documentum attribute we do not want to tokenize (not visible to end-user)" enumerate-repeating-elements="false" full-text-search="false" include-descendants="false" leading-wildcard="false" path="dmftmetadata//r_aspect_name" returning-contents="false" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="false" description="Documentum attribute we do not want to tokenize (not visible to end-user)" enumerate-repeating-elements="false" full-text-search="false" include-descendants="false" leading-wildcard="false" path="dmftmetadata//acl_name" returning-contents="false" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="false" description="Documentum attribute we do not want to tokenize (not visible to end-user)" enumerate-repeating-elements="false" full-text-search="false" include-descendants="false" leading-wildcard="false" path="dmftmetadata//acl_domain" returning-contents="false" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="false" description="Documentum attribute we do not want to tokenize (not visible to end-user)" enumerate-repeating-elements="false" full-text-search="false" include-descendants="false" leading-wildcard="false" path="dmftmetadata//r_folder_path" returning-contents="false" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="true" description="Used for security filtering" enumerate-repeating-elements="false" full-text-search="false" include-descendants="false" leading-wildcard="false" path="dmftsecurity/acl_name" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="true" description="Used for security filtering" enumerate-repeating-elements="false" full-text-search="false" include-descendants="false" leading-wildcard="false" path="dmftsecurity/acl_domain" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="false" enumerate-repeating-elements="false" full-text-search="false" include-descendants="false" leading-wildcard="false" path="dmftinternal/*" returning-contents="false" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="false" enumerate-repeating-elements="false" full-text-search="false" include-descendants="false" leading-wildcard="false" path="dmftfolders/*" returning-contents="false" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="false" enumerate-repeating-elements="false" full-text-search="false" include-descendants="false" leading-wildcard="false" path="dmftversions/*" returning-contents="false" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="false" enumerate-repeating-elements="false" full-text-search="false" include-descendants="false" leading-wildcard="false" path="dmftvstamp/*" returning-contents="false" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="true" description="Used by CenterStage to compute facets on modifier attribute" enumerate-repeating-elements="false" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftmetadata//r_modifier" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="true" description="Used by CenterStage to compute facets on keywords attribute (initially used by CIS for entities)" enumerate-repeating-elements="false" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftmetadata//keywords" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="false" description="Used by CenterStage to compute facets on date. The type parameter is also required to evaluate range constraints on date." enumerate-repeating-elements="false" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftmetadata//r_modify_date" returning-contents="true" sortable="false" type="datetime" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="false" description="Used by CenterStage to compute facets on size. The type parameter is also required to evaluate range constraints on size." enumerate-repeating-elements="false" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftmetadata//r_full_content_size" returning-contents="true" sortable="false" type="double" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="true" description="Used by CenterStage to compute facets on format." enumerate-repeating-elements="false" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftmetadata//a_application_type" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="true" description="Used by CenterStage to compute facets on format." enumerate-repeating-elements="false" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftmetadata//r_object_type" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="false" description="Used by CenterStage to compute facets on space/location." enumerate-repeating-elements="false" full-text-search="false" include-descendants="false" leading-wildcard="false" path="dmftmetadata//dmAspect/dmc_room_aspect/a_gov_room_id" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="true" description="Used by CenterStage to compute facets on content type." enumerate-repeating-elements="false" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftmetadata//a_content_type" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="false" enumerate-repeating-elements="false" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftmetadata//r_object_id" returning-contents="false" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="false" description="leading wildcard queries" enumerate-repeating-elements="false" full-text-search="true" include-descendants="false" leading-wildcard="true" path="dmftmetadata//object_name" returning-contents="false" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="true" description="Used for security filtering" enumerate-repeating-elements="false" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftmetadata//owner_name" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="false" enumerate-repeating-elements="false" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftmetadata//r_creation_date" returning-contents="false" sortable="false" type="datetime" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="false" enumerate-repeating-elements="false" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftmetadata//sent_date" returning-contents="false" sortable="false" type="datetime" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="false" enumerate-repeating-elements="false" full-text-search="true" include-descendants="true" leading-wildcard="false" path="dmftcontents/dmftcontent" returning-contents="false" sortable="false" type="string" value-comparison="false"/>
+					<sub-path boost-value="1.0" compress="false" enumerate-repeating-elements="false" full-text-search="false" include-descendants="false" leading-wildcard="false" path="dmftcontents/dmftcontent//*" returning-contents="false" sortable="false" type="string" value-comparison="false"/>
+					<sub-path boost-value="1.0" compress="false" enumerate-repeating-elements="false" full-text-search="true" include-descendants="true" leading-wildcard="false" path="dmftcustom" returning-contents="false" sortable="false" type="string" value-comparison="false"/>
+					<sub-path boost-value="1.0" compress="false" enumerate-repeating-elements="false" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftcustom//*" returning-contents="false" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="false" description="covering queries" enumerate-repeating-elements="false" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftinternal/r_object_id" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="true" description="covering queries" enumerate-repeating-elements="false" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftinternal/r_object_type" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="true" description="Used by CenterStage to compute facets persons" enumerate-repeating-elements="false" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftcustom/entities/person" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="true" description="Used by CenterStage to compute facets companies" enumerate-repeating-elements="false" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftcustom/entities/company" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="true" description="Used by CenterStage to compute facets locations" enumerate-repeating-elements="true" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftcustom/entities/location" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="true" description="Used by CenterStage to compute facets locations" enumerate-repeating-elements="true" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftcustom/entities/location/continent" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="true" description="Used by CenterStage to compute facets locations" enumerate-repeating-elements="true" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftcustom/entities/location/country" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="true" description="Used by CenterStage to compute facets locations" enumerate-repeating-elements="true" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftcustom/entities/location/state" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="true" description="Used by CenterStage to compute facets locations" enumerate-repeating-elements="true" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftcustom/entities/location/city" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="false" enumerate-repeating-elements="false" full-text-search="true" include-descendants="false" leading-wildcard="false" path="//*" returning-contents="false" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="false" enumerate-repeating-elements="false" full-text-search="false" include-descendants="false" leading-wildcard="false" path="dmftdsearchinternals" returning-contents="false" sortable="false" type="string" value-comparison="false"/>
+					<sub-path boost-value="1.0" compress="false" enumerate-repeating-elements="false" full-text-search="false" include-descendants="false" leading-wildcard="false" path="dmftdsearchinternals/*" returning-contents="false" sortable="false" type="string" value-comparison="false"/>
+					<sub-path boost-value="1.0" compress="true" description="Used to support constraints on emails" enumerate-repeating-elements="true" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftcustom/rootmessage/dm_message_routes/dm_message_route" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+					<sub-path boost-value="1.0" compress="true" description="Used to support constraints on emails" enumerate-repeating-elements="true" full-text-search="true" include-descendants="false" leading-wildcard="false" path="dmftcustom/rootmessage/dm_user_data" returning-contents="true" sortable="false" type="string" value-comparison="true"/>
+				</path-value-index>
+				<path-value-index name="folder-filter-index" options="CONCURRENT" path="/dmftdoc[dmftinternal/r_object_id + dmftfolders/i_ancestor_id&lt;STRING&gt;]"/>
+			</indexes>
+		</category>
+		<category name="acl">
+			<properties>
+				<property name="track-location" value="false"/>
+			</properties>
+			<indexes>
+				<path-value-index name="acl" options="" path="/acl[object_name&lt;STRING&gt; + owner_name&lt;STRING&gt; + accessors/accessor[r_accessor_permit&lt;INT&gt; + r_permit_type&lt;INT&gt; + r_accessor_name&lt;STRING&gt; + r_is_group&lt;STRING&gt;]]"/>
+				<path-value-index name="aclobjectid" options="" path="/acl[r_object_id&lt;STRING&gt;]"/>
+			</indexes>
+		</category>
+		<category name="group">
+			<properties>
+				<property name="track-location" value="false"/>
+			</properties>
+			<indexes>
+				<path-value-index name="group" options="" path="/group[group_name&lt;STRING&gt;]"/>
+				<path-value-index name="groupobjectid" options="" path="/group[r_object_id&lt;STRING&gt;]"/>
+			</indexes>
+		</category>
+		<category name="trackdb">
+			<properties>
+				<property name="track-location" value="false"/>
+			</properties>
+			<indexes>
+				<value-index name="collection-name">
+					<value elementName="collection-name" options="CONCURRENT" value-type="STRING"/>
+				</value-index>
+				<value-index name="library-path">
+					<value elementName="library-path" options="CONCURRENT" value-type="STRING"/>
+				</value-index>
+				<path-value-index name="document id" options="UNIQUE" path="/trackinginfo/document[@id&lt;STRING&gt;]"/>
+			</indexes>
+		</category>
+		<category name="statusdb">
+			<properties>
+				<property name="track-location" value="false"/>
+			</properties>
+			<indexes>
+				<path-value-index name="operation id and doc-id" options="CONCURRENT" path="/trackinginfo/operation[@id&lt;STRING&gt; + @doc-id&lt;STRING&gt;]"/>
+				<path-value-index name="operation doc-id" options="CONCURRENT" path="/trackinginfo/operation[@doc-id&lt;STRING&gt;]"/>
+				<path-value-index name="operation id" options="CONCURRENT" path="/trackinginfo/operation[@id&lt;STRING&gt;]"/>
+				<path-value-index name="clientid_with_status" options="CONCURRENT" path="/trackinginfo/operation[@client-id&lt;STRING&gt; + @status&lt;STRING&gt;]"/>
+			</indexes>
+		</category>
+		<category name="metricsdata">
+			<properties>
+				<property name="track-location" value="false"/>
+			</properties>
+			<indexes>
+				<path-value-index name="metrics" options="CONCURRENT" path="/metrics//Ingest[TypeOfRec&lt;STRING&gt; + BeginTimeStamp&lt;STRING&gt;]"/>
+			</indexes>
+		</category>
+		<category name="auditdata">
+			<properties>
+				<property name="track-location" value="false"/>
+			</properties>
+			<indexes>
+				<path-value-index name="audit1" options="CONCURRENT" path="//event[@component&lt;STRING&gt; + @name&lt;STRING&gt; + START_TIME&lt;STRING&gt; + USER_NAME&lt;STRING&gt;  ]"/>
+				<path-value-index name="audit2" options="CONCURRENT" path="//event[@component&lt;STRING&gt; + START_TIME&lt;STRING&gt; + USER_NAME&lt;STRING&gt; + QUERY_OPTION/@DOMAIN&lt;STRING&gt; ]"/>
+				<path-value-index name="audit3" options="CONCURRENT" path="//event[@component&lt;STRING&gt; + START_TIME&lt;STRING&gt; + USER_NAME&lt;STRING&gt;]"/>
+				<path-value-index name="audit4" options="CONCURRENT" path="//event[@component&lt;STRING&gt; + @name&lt;STRING&gt; + START_TIME&lt;STRING&gt; + application_context/app_data/attr/@value&lt;STRING&gt; ]"/>
+				<path-value-index name="audit5" options="CONCURRENT" path="//event[@component&lt;STRING&gt; + @name&lt;STRING&gt; + START_TIME&lt;STRING&gt; +  application_context/app_data/attr/@name&lt;STRING&gt; + application_context/app_data/attr/@value&lt;STRING&gt; ]"/>
+				<path-value-index name="audit6" options="CONCURRENT" path="//event[@component&lt;STRING&gt; + @name&lt;STRING&gt; + START_TIME&lt;STRING&gt; +  application_context/app_data/attr ]"/>
+				<path-value-index name="audit7" options="CONCURRENT" path="//event/application_context/app_data/attr[@name&lt;STRING&gt; + @value&lt;STRING&gt;]"/>
+				<path-value-index name="query-id" options="CONCURRENT" path="//event[QUERY_ID&lt;STRING&gt; ]"/>
+				<path-value-index name="audit-query-terms" options="GET_ALL_TEXT,SUPPORT_PHRASES" path="//event[QUERY&lt;FULL_TEXT::GET_ALL_TEXT,SUPPORT_PHRASES&gt;]"/>
+			</indexes>
+		</category>
+		<category name="thesaurusdb">
+			<properties>
+				<property name="track-location" value="false"/>
+			</properties>
+			<indexes>
+				<path-value-index name="prefLabel" options="GET_ALL_TEXT,SUPPORT_PHRASES,NO_LOGGING,INCLUDE_START_END_TOKEN_FLAGS" path="/{http://www.w3.org/1999/02/22-rdf-syntax-ns#}RDF/{http://www.w3.org/2004/02/skos/core#}Concept/{http://www.w3.org/2004/02/skos/core#}prefLabel&lt;FULL_TEXT:com.emc.documentum.core.fulltext.indexserver.core.index.xhive.IndexServerAnalyzer:GET_ALL_TEXT,SUPPORT_PHRASES,INCLUDE_START_END_TOKEN_FLAGS,INDEX_PATHS&gt;" xpath="/rdf:RDF/skos:Concept/skos:prefLabel">
+					<sub-path boost-value="1.0" compress="false" description="preferred values" enumerate-repeating-elements="false" full-text-search="true" include-descendants="true" leading-wildcard="false" path="//*" returning-contents="false" sortable="false" type="string" value-comparison="false"/>
+				</path-value-index>
+			</indexes>
+		</category>
+	</category-definitions>
+	<tracing-config>
+		<tracing enable="false" mode="standard" verbosity="standard">
+			<output dir="C:/xPlore/temp" file-creation-mode="single-file" file-prefix="ESSTrace" max-backup-index="1" max-file-size="100MB"/>
+		</tracing>
+	</tracing-config>
+	<logging>
+		<logger family="dsearch-client" level="WARN" name="com.emc.documentum.core.fulltext.client"/>
+		<logger family="dsearch-admin" level="WARN" name="com.emc.documentum.core.fulltext.indexserver.admin"/>
+		<logger family="dsearch-index" level="WARN" name="com.emc.documentum.core.fulltext.indexserver.core.collection"/>
+		<logger family="dsearch-index" level="WARN" name="com.emc.documentum.core.fulltext.indexserver.core.index"/>
+		<logger family="dsearch-index" level="WARN" name="com.emc.documentum.core.fulltext.indexserver.trackdb"/>
+		<logger family="dsearch-search" level="WARN" name="com.emc.documentum.core.fulltext.indexserver.search"/>
+		<logger family="dsearch-search" level="WARN" name="com.emc.documentum.core.fulltext.indexserver.services.aggregate"/>
+		<logger family="dsearch-search" level="WARN" name="com.emc.documentum.core.fulltext.indexserver.services.groupcache"/>
+		<logger family="dsearch-search" level="WARN" name="com.emc.documentum.core.fulltext.indexserver.services.score"/>
+		<logger family="dsearch-search" level="WARN" name="com.emc.documentum.core.fulltext.indexserver.services.security"/>
+		<logger family="dsearch-search" level="WARN" name="com.emc.documentum.core.fulltext.indexserver.services.summary"/>
+		<logger family="dsearch-search" level="WARN" name="com.emc.documentum.core.fulltext.indexserver.services.facets"/>
+		<logger family="dsearch-search" level="WARN" name="com.emc.documentum.core.fulltext.indexserver.services.folders"/>
+		<logger family="dsearch-search" level="WARN" name="com.emc.documentum.core.fulltext.indexserver.services.thesaurus"/>
+		<logger family="dsearch-search" level="WARN" name="com.emc.documentum.core.fulltext.common.search.impl"/>
+		<logger family="dsearch-search" level="WARN" name="com.emc.documentum.core.fulltext.indexserver.cps"/>
+		<logger family="dsearch-search" level="WARN" name="com.emc.documentum.core.fulltext.common.index.impl"/>
+		<logger family="dsearch-default" level="WARN" name="com.emc.documentum.core.fulltext.common"/>
+		<logger family="cps-daemon" level="WARN" name="com.emc.cma.cps.util.ProcessOutputStreamReader"/>
+		<logger family="cps-manager" level="WARN" name="com.emc.cma.cps"/>
+		<logger family="xdb" level="WARN" name="com.xhive.plugin"/>
+		<logger family="xdb" level="WARN" name="com.xhive.core"/>
+		<logger family="xdb" level="WARN" name="com.xhive.index.multipath.query"/>
+		<logger family="xdb" level="WARN" name="com.xhive.index.multipath.indexing"/>
+		<logger family="xdb" level="WARN" name="com.xhive.index.multipath.merging"/>
+	</logging>
+	<trackdb class-name="com.emc.documentum.core.fulltext.indexserver.trackdb.impl.xhive.TrackDBManager"/>
+	<storage-locations>
+		<storage-location name="default" path="//10.62.46.92/c$/xPlore/data" quota_in_MB="10" status="not_full"/>
+	</storage-locations>
+	<index-config>
+		<properties>
+			<property name="CPS-requests-max-size" value="1000"/>
+			<property name="CPS-requests-batch-size" value="5"/>
+			<property name="CPS-threadpool-core-size" value="10"/>
+			<property name="CPS-threadpool-max-size" value="100"/>
+			<property name="CPS-thread-wait-time" value="1000"/>
+			<property name="CPS-executor-queue-size" value="10"/>
+			<property name="CPS-executor-retry-wait-time" value="1000"/>
+			<property name="index-requests-max-size" value="1000"/>
+			<property name="index-requests-batch-size" value="10"/>
+			<property name="index-threadpool-core-size" value="10"/>
+			<property name="index-threadpool-max-size" value="100"/>
+			<property name="index-thread-wait-time" value="1000"/>
+			<property name="index-executor-queue-size" value="10"/>
+			<property name="index-executor-retry-wait-time" value="1000"/>
+			<property name="status-requests-batch-size" value="1000"/>
+			<property name="status-thread-wait-time" value="1000"/>
+			<property name="index-check-duplicate-at-ingestion" value="true"/>
+			<property name="commit-option" value="-1"/>
+			<property name="rebuild-index-batch-size" value="1000"/>
+			<property name="rebuild-index-embed-content-limit" value="2048"/>
+			<property name="enable-subcollection-ftindex" value="false"/>
+			<property name="freshness-weight" value="0.5"/>
+			<property name="allow-move-existing-documents" value="true"/>
+		</properties>
+	</index-config>
+	<search-config>
+		<properties>
+			<property name="query-default-locale" value="en"/>
+			<property name="query-default-result-batch-size" value="678"/>
+			<property name="query-result-cache-size" value="200"/>
+			<property name="query-result-spool-location" value="C:/xPlore/dsearch/spool"/>
+			<property name="query-default-timeout" value="60000"/>
+			<property name="query-threadpool-core-size" value="10"/>
+			<property name="query-threadpool-max-size" value="100"/>
+			<property name="query-threadpool-queue-size" value="0"/>
+			<property name="query-threadpool-keep-alive-time" value="600000"/>
+			<property name="query-threadpool-keep-alive-time-unit" value="milliseconds"/>
+			<property name="query-executor-retry-interval" value="100"/>
+			<property name="query-executor-retry-limit" value="3"/>
+			<property name="query-thread-sync-interval" value="100"/>
+			<property name="query-thread-max-idle-interval" value="3600000"/>
+			<property name="query-summary-default-highlighter" value="com.emc.documentum.core.fulltext.indexserver.services.summary.DefaultSummary"/>
+			<property name="query-summary-display-length" value="256"/>
+			<property name="query-summary-highlight-begin-tag" value=""/>
+			<property name="query-summary-highlight-end-tag" value=""/>
+			<property name="query-enable-dynamic-summary" value="true"/>
+			<property name="max-dynamic-summary-threshold" value="50"/>
+			<property name="query-index-covering-values" value="com.emc.documentum.core.fulltext.indexserver.services.aggregate.IndexCoveringValues"/>
+			<property name="query-facet-max-result-size" value="10000"/>
+			<property name="query-original-term-weight" value="1.0"/>
+			<property name="query-alternative-term-weight" value="1.0"/>
+			<property name="query-thesaurus-term-weight" value="1.0"/>
+			<property name="query-enable-language-detection" value="false"/>
+			<property name="query-no-detection-input-language" value="zh,ja,ko,fr"/>
+			<property name="query-detection-language-override" value="zh,ja,ko,fr"/>
+			</properties>
+		<security-filter-class class-name="com.emc.documentum.core.fulltext.indexserver.services.security.SecurityJoin" default="true" name="documentum">
+			<properties>
+				<property name="groups-in-cache-size" value="1000"/>
+				<property name="not-in-groups-cache-size" value="1000"/>
+				<property name="acl-cache-size" value="400"/>
+				<property name="batch-size" value="800"/>
+				<property name="max-tail-recursion-depth" value="10000"/>
+			</properties>
+		</security-filter-class>
+	</search-config>
+	<engine-config>
+		<properties>
+			<property name="keep-xdb-transactional-log" value="false"/>
+		</properties>
+		<index-plugin index-value-leaf-node-only="true"/>
+	</engine-config>
+	<domain default-document-category="" name="SystemData" storage-location-name="default">
+		<collection document-category="metricsdata" name="MetricsDB" usage="Internal">
+			<properties>
+				<property name="index-required" value="false"/>
+			</properties>
+			<collection document-category="metricsdata" name="PrimaryDsearch" usage="Internal">
+				<properties>
+					<property name="load-file-on-startup_0" value="metrics.xml"/>
+				</properties>
+				<binding-node name="PrimaryDsearch"/>
+			</collection>
+		</collection>
+		<collection document-category="auditdata" name="AuditDB" usage="Internal">
+			<properties>
+				<property name="index-required" value="false"/>
+			</properties>
+			<collection document-category="auditdata" name="PrimaryDsearch" usage="Internal">
+				<properties>
+					<property name="load-file-on-startup_0" value="auditRecords.xml"/>
+				</properties>
+				<binding-node name="PrimaryDsearch"/>
+			</collection>
+		</collection>
+	</domain>
+	<domain default-document-category="dftxml" name="JRRepo" storage-location-name="default">
+		<collection document-category="dftxml" name="default" usage="Data"/>
+		<collection document-category="trackdb" name="TrackingDB" usage="SystemInfo">
+			<properties>
+				<property name="index-required" value="false"/>
+			</properties>
+		</collection>
+		<collection document-category="statusdb" name="StatusDB" usage="SystemInfo">
+			<properties>
+				<property name="index-required" value="false"/>
+			</properties>
+			<collection document-category="statusdb" name="PrimaryDsearch" usage="SystemInfo">
+				<binding-node name="PrimaryDsearch"/>
+			</collection>
+		</collection>
+		<collection document-category="thesaurusdb" name="ThesaurusDB" usage="SystemInfo"/>
+		<collection document-category="acl" name="acl" usage="ApplicationInfo"/>
+		<collection document-category="group" name="group" usage="ApplicationInfo">
+			<properties>
+				<property name="load-file-on-startup" value="counter.xml"/>
+			</properties>
+		</collection>
+	</domain>
+	<security>
+		<auditing status="on">
+			<audit-config component="search" format="xml" location="default" status="on"/>
+			<audit-config component="admin" format="xml" location="default" status="on"/>
+			<properties>
+				<property name="audit-save-batch-size" value="100"/>
+				<property name="lifespan-in-days" value="30"/>
+				<property name="preferred-purge-time" value="00:00:00"/>
+			</properties>
+		</auditing>
+	</security>
+	<system-metrics-service enable="true">
+		<task enable="true" interval="60" name="INDEX"/>
+		<task enable="true" interval="3600" name="PURGE">
+			<properties>
+				<property name="delete-older-than" value="90"/>
+				<property name="units" value="DAYS"/>
+			</properties>
+		</task>
+	</system-metrics-service>
+	<admin-config>
+		<backup-location path="C:/xPlore/dsearch/backup"/>
+	</admin-config>
+	<performance>
+		<warmup status="on">
+			<properties>
+				<property name="script" value="../../dsearch/xhive/admin/QueryRunner.bat"/>
+				<property name="timeout-in-secs" value="600"/>
+			</properties>
+		</warmup>
+	</performance>
+</index-server-configuration>
