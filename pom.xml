@@ -7,7 +7,7 @@
     <artifactId>ttlib-java-practice</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>java_practice</name>
+    <name>java-practice</name>
 
     <description>
         TTlib_Java_Practice Project
