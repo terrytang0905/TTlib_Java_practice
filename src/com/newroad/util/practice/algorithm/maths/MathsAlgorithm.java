@@ -1,4 +1,4 @@
-package com.newroad.util.practice.algorithm.example;
+package com.newroad.util.practice.algorithm.maths;
 
 import java.util.Scanner;
 import java.io.*;

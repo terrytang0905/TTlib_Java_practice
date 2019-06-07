@@ -1,4 +1,4 @@
-package com.newroad.util.practice.stringhandler;
+package com.newroad.util.practice.datastruct.stringhandler;
 
 import java.util.Iterator;
 import java.util.Map.Entry;

@@ -1,4 +1,4 @@
-package com.newroad.util.practice.codepass;
+package com.newroad.util.practice.datastruct;
 
 public class BinaryTreeNode {
     public static int value;

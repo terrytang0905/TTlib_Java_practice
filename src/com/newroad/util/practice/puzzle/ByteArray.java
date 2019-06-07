@@ -11,7 +11,7 @@ public class ByteArray {
 		System.out.println(i);
 		byte[] b;
 		while (i<Integer.MAX_VALUE/2) {
-			 b= new byte[i];
+			b= new byte[i];
 			System.out.println("byte array size:"+i);
 			i=i+10000000;
 		}

@@ -1,4 +1,4 @@
-package com.newroad.util.practice.codepass;
+package com.newroad.util.practice.datastruct;
 
 public class StringFind {
     public static boolean find(int[][] array,int number){
@@ -16,6 +16,30 @@ public class StringFind {
             }else{
                 row++;
             } }
+        return false;
+    }
+
+    public static boolean search(String[] dictionary,String wordToFind){
+        if(dictionary==null){
+            return false;
+        }
+        if(dictionary.length==0){
+            return false;
+        }
+
+        int left=0,right=dictionary.length-1;
+        while (left<=right){
+            int middle=(left+right)/2;
+            if(dictionary[middle].equals(wordToFind)){
+                return true;
+            }else{
+                if(dictionary[middle].compareTo(wordToFind)>0){
+                    right=middle-1;
+                }else{
+                    left=middle-1;
+                }
+            }
+        }
         return false;
     }
 
