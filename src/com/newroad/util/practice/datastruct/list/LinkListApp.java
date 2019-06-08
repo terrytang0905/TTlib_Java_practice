@@ -1,4 +1,7 @@
-package com.newroad.util.practice.algorithm.list;
+package com.newroad.util.practice.datastruct.list;
+
+import com.newroad.util.practice.datastruct.list.Link;
+import com.newroad.util.practice.datastruct.list.LinkList;
 
 /**
  * Created with IntelliJ IDEA.
