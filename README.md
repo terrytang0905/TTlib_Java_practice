@@ -4,11 +4,14 @@ JavaUtility
 J2SE common utilities
 
 - Algorithm
-- String handler
+- Concurrency
+- Data Struct
+- Deep Copy
+- Event handler
+- File handler
 - IO handler
 - Performance
 - Messager
-- Concurrency
 - Puzzle
 - XMLProcessing
 
