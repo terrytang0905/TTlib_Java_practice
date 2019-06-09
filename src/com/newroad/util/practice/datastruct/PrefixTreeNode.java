@@ -23,7 +23,7 @@ public class PrefixTreeNode {
         label = l;
         prefix = pre;
         explanation = exp;
-        sons = new HashMap<>();
+        sons = new HashMap<Character, PrefixTreeNode>();
 
     }
 
